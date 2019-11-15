@@ -1,5 +1,6 @@
 { overlays ? []
 , pkgs ? import ./nix { inherit overlays; }
+, additionalBuildInputs ? []
 }:
 
 with (import ./lib/directory.nix { inherit pkgs; });
@@ -43,7 +44,7 @@ let
       env = pkgs.mkShell {
         name = "jupyterlab-shell";
         buildInputs =
-          [ jupyterlab generateDirectory pkgs.nodejs ] ++ (map (k: k.runtimePackages) kernels);
+          [ jupyterlab generateDirectory pkgs.nodejs ] // additionalBuildInputs ++ (map (k: k.runtimePackages) kernels);
         shellHook = ''
           export JUPYTER_PATH=${kernelsString kernels}
           export JUPYTERLAB=${jupyterlab}
